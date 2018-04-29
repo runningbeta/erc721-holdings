@@ -1,5 +1,5 @@
 {
-  "name": "erc721-holdings",
+  "name": "@runningbeta/erc721-holdings",
   "version": "0.0.1",
   "description": "ERC721 Holdings contracts library for Solidity",
   "directories": {
