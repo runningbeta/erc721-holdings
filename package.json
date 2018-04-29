@@ -1,0 +1,47 @@
+{
+  "name": "erc721-holdings",
+  "version": "0.0.1",
+  "description": "ERC721 Holdings contracts library for Solidity",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "compile": "node_modules/.bin/truffle compile",
+    "test": "node_modules/.bin/truffle test",
+    "console": "node_modules/.bin/truffle console",
+    "lint:sol": "./node_modules/solium/bin/solium.js -d .",
+    "lint:sol:fix": "./node_modules/solium/bin/solium.js -d . --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/runningbeta/erc721-holdings.git"
+  },
+  "keywords": [
+    "erc721",
+    "holdings",
+    "non-fungible",
+    "token",
+    "item",
+    "solidity",
+    "ethereum",
+    "smart",
+    "contracts",
+    "r8",
+    "runningbeta",
+    "security",
+    "zeppelin"
+  ],
+  "author": "Kristijan Rebernisak <kristijan@runningbeta.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/runningbeta/erc721-holdings/issues"
+  },
+  "homepage": "https://github.com/runningbeta/erc721-holdings#readme",
+  "dependencies": {
+    "openzeppelin-solidity": "^1.9.0"
+  },
+  "devDependencies": {
+    "solium": "^1.1.6",
+    "truffle": "^4.1.7"
+  }
+}
