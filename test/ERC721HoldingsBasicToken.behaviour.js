@@ -383,6 +383,143 @@ export default function shouldBehaveLikeERC721HoldingsBasicToken (accounts) {
       });
     });
 
+    describe('approve holder', function () {
+      const tokenId = firstTokenId;
+      const sender = creator;
+      const to = secondAvatarId;
+      let logs = null;
+
+      const itClearsHolderApproval = function () {
+        it('clears approved holder for the token', async function () {
+          let newHolderId;
+          let newHolderOrigin;
+          [newHolderId, newHolderOrigin] = await this.token.getApprovedHolder(tokenId);
+          newHolderId.should.be.bignumber.equal(0);
+          newHolderOrigin.should.be.equal(ZERO_ADDRESS);
+        });
+      };
+
+      const itApprovesHolder = function (holderId) {
+        it('sets the approval for the target holder', async function () {
+          let newHolderId;
+          let newHolderOrigin;
+          [newHolderId, newHolderOrigin] = await this.token.getApprovedHolder(tokenId);
+          newHolderId.should.be.bignumber.equal(holderId);
+          newHolderOrigin.should.be.equal(this.avatars.address);
+        });
+      };
+
+      const itEmitsClearedHolderApprovalEvent = function() {
+        it('emits an holder approval event', async function () {
+          logs.length.should.be.equal(1);
+          logs[0].event.should.be.eq('HolderApproval');
+          logs[0].args._owner.should.be.equal(sender);
+          logs[0].args._approvedHolder.should.be.bignumber.equal(0);
+          logs[0].args._approvedHolderOrigin.should.be.equal(ZERO_ADDRESS);
+          logs[0].args._tokenId.should.be.bignumber.equal(tokenId);
+        });
+      }
+
+      const itEmitsHolderApprovalEvent = function (holderId) {
+        it('emits an holder approval event', async function () {
+          logs.length.should.be.equal(1);
+          logs[0].event.should.be.eq('HolderApproval');
+          logs[0].args._owner.should.be.equal(sender);
+          logs[0].args._approvedHolder.should.be.bignumber.equal(holderId);
+          logs[0].args._approvedHolderOrigin.should.be.equal(this.avatars.address);
+          logs[0].args._tokenId.should.be.bignumber.equal(tokenId);
+        });
+      };
+      
+      describe('when clearing approval', function () {
+        describe('when there was no prior holder approval', function () {
+          beforeEach(async function () {
+            ({ logs } = await this.token.approveHolder(0, ZERO_ADDRESS, tokenId, { from: sender }));
+          });
+
+          itClearsHolderApproval();
+
+          it('does not emit an holder approval event', async function () {
+            logs.length.should.be.equal(0);
+          });
+        });
+    
+        describe('when there was a prior holder approval', function () {
+          beforeEach(async function () {
+            await this.token.approveHolder(to, this.avatars.address, tokenId, { from: sender });
+            ({ logs } = await this.token.approveHolder(0, ZERO_ADDRESS, tokenId, { from: sender }));
+          });
+
+          itClearsHolderApproval();
+          itEmitsClearedHolderApprovalEvent();
+        });
+      });
+
+      describe('when approving a non-zero holder', function () {
+        describe('when there was no prior holder approval', function () {
+          beforeEach(async function () {
+            ({ logs } = await this.token.approveHolder(to, this.avatars.address, tokenId, { from: sender }));
+          });
+
+          itApprovesHolder(to);
+          itEmitsHolderApprovalEvent(to);
+        });
+
+        describe('when there was a prior holder approval to the same holder', function () {
+          let toOrigin;
+          beforeEach(async function () {
+            toOrigin = this.avatars.address;
+            await this.token.approveHolder(to, this.avatars.address, tokenId, { from: sender });
+            ({ logs } = await this.token.approveHolder(to, this.avatars.address, tokenId, { from: sender }));
+          });
+
+          itApprovesHolder(to);
+          itEmitsHolderApprovalEvent(to);
+        });
+
+        describe('when there was a prior holder approval to a different address', function () {
+          let toOrigin;
+          beforeEach(async function () {
+            toOrigin = this.avatars.address;
+            await this.token.approveHolder(secondAvatarId, this.avatars.address, tokenId, { from: sender });
+            ({ logs } = await this.token.approveHolder(to, this.avatars.address, tokenId, { from: sender }));
+          });
+
+          itApprovesHolder(to);
+          itEmitsHolderApprovalEvent(to);
+        });
+      });
+
+      describe('when the holder that receives the holder approval is the holder', function () {
+        it('reverts', async function () {
+          await assertRevert(this.token.approveHolder(firstAvatarId, this.avatars.address, tokenId, { from: sender }));
+        });
+      });
+      
+      describe('when the sender does not own the given token ID', function () {
+        it('reverts', async function () {
+          await assertRevert(this.token.approveHolder(to, this.avatars.address, tokenId, { from: accounts[2] }));
+        });
+      });
+
+      describe('when the sender is an operator', function () {
+        const operator = accounts[2];
+        beforeEach(async function () {
+          await this.token.setApprovalForAll(operator, true, { from: sender });
+          ({ logs } = await this.token.approveHolder(to, this.avatars.address, tokenId, { from: operator }));
+        });
+
+        itApprovesHolder(to);
+        itEmitsHolderApprovalEvent(to);
+      });
+
+      describe('when the given token ID does not exist', function () {
+        it('reverts', async function () {
+          await assertRevert(this.token.approveHolder(to, this.avatars.address, unknownTokenId, { from: sender }));
+        });
+      });
+    });
+
     describe('setApprovalForAll', function () {
       const sender = creator;
 
