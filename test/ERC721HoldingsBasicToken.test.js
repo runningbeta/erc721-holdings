@@ -17,5 +17,5 @@ contract('ERC721HoldingsBasicToken', function (accounts) {
   });
 
   shouldBehaveLikeERC721HoldingsBasicToken(accounts);
-  // shouldMintAndBurnERC721HoldingsToken(accounts);
+  shouldMintAndBurnERC721HoldingsToken(accounts);
 });
