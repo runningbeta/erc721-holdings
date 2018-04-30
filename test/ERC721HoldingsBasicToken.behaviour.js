@@ -19,7 +19,6 @@ export default function shouldBehaveLikeERC721HoldingsBasicToken (accounts) {
 
   const creator = accounts[0];
   const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
-  const RECEIVER_MAGIC_VALUE = '0xf0b9e5ba';
 
   describe('like a ERC721HoldingsBasicToken', function () {
     beforeEach(async function () {

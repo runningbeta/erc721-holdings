@@ -1,5 +1,5 @@
 import shouldBehaveLikeERC721HoldingsBasicToken from './ERC721HoldingsBasicToken.behaviour';
-// import shouldMintAndBurnERC721HoldingsToken from './ERC721HoldingsMintBurn.behaviour';
+import shouldMintAndBurnERC721HoldingsToken from './ERC721HoldingsMintBurn.behaviour';
 
 const BigNumber = web3.BigNumber;
 const ERC721BasicToken = artifacts.require('mocks/ERC721BasicTokenMock');
@@ -17,5 +17,5 @@ contract('ERC721HoldingsBasicToken', function (accounts) {
   });
 
   shouldBehaveLikeERC721HoldingsBasicToken(accounts);
-  // shouldMintAndBurnERC721HoldingsToken(accounts);
+  shouldMintAndBurnERC721HoldingsToken(accounts);
 });
