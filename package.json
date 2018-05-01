@@ -1,10 +1,14 @@
 {
   "name": "@runningbeta/erc721-holdings",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "ERC721 Holdings contracts library for Solidity",
   "directories": {
     "test": "test"
   },
+  "files": [
+    "contracts",
+    "test"
+  ],
   "scripts": {
     "compile": "node_modules/.bin/truffle compile",
     "test": "node_modules/.bin/truffle test",
