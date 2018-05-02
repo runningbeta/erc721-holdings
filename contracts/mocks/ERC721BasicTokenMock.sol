@@ -2,6 +2,7 @@ pragma solidity ^0.4.21;
 
 import "openzeppelin-solidity/contracts/token/ERC721/ERC721BasicToken.sol";
 
+
 /**
  * @title ERC721BasicTokenMock
  * This mock just provides a public mint and burn functions for testing purposes

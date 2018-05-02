@@ -5,6 +5,7 @@ import "openzeppelin-solidity/contracts/AddressUtils.sol";
 import "openzeppelin-solidity/contracts/token/ERC721/ERC721.sol";
 import "./ERC721HoldingsBasic.sol";
 
+
 /**
  * @title Holdings of ERC-721 Non-Fungible Token Standard, basic implementation
  * @dev see https://github.com/ethereum/EIPs/blob/master/EIPS/eip-721.md

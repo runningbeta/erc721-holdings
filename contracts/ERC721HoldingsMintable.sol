@@ -2,6 +2,7 @@ pragma solidity ^0.4.23;
 
 import "./ERC721HoldingsBasic.sol";
 
+
 /**
  * @title Holdings of ERC-721 Non-Fungible Token Standard, optional mintable extension
  * @dev see https://github.com/ethereum/EIPs/blob/master/EIPS/eip-721.md

@@ -3,6 +3,7 @@ pragma solidity ^0.4.23;
 import "./ERC721Holdings.sol";
 import "./ERC721HoldingsBasicToken.sol";
 
+
 /**
  * @title Full ERC721Holdings Token
  * This implementation includes all the required and some optional functionality of the ERC721Holdings standard

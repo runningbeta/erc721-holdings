@@ -1,5 +1,6 @@
 pragma solidity ^0.4.23;
 
+
 /**
  * @title Holdings of ERC-721 Non-Fungible Token Standard, basic interface
  * @dev see https://github.com/ethereum/EIPs/blob/master/EIPS/eip-721.md
