@@ -2,6 +2,7 @@ pragma solidity ^0.4.23;
 
 import "./ERC721Holdings.sol";
 import "./ERC721HoldingsBasicToken.sol";
+import "./ERC721HoldingsExecuteCallsToken.sol";
 
 
 /**
@@ -9,7 +10,7 @@ import "./ERC721HoldingsBasicToken.sol";
  * This implementation includes all the required and some optional functionality of the ERC721Holdings standard
  * @dev see https://github.com/ethereum/EIPs/blob/master/EIPS/eip-721.md
  */
-contract ERC721HoldingsToken is ERC721Holdings, ERC721HoldingsBasicToken {
+contract ERC721HoldingsToken is ERC721Holdings, ERC721HoldingsBasicToken, ERC721HoldingsExecuteCallsToken {
   // Token name
   string internal name_;
 

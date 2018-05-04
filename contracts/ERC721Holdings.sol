@@ -1,6 +1,7 @@
 pragma solidity ^0.4.23;
 
 import "./ERC721HoldingsBasic.sol";
+import "./ERC721HoldingsExecuteCalls.sol";
 
 
 /**
@@ -29,4 +30,4 @@ contract ERC721HoldingsMetadata is ERC721HoldingsBasic {
  * @title Holdings of ERC-721 Non-Fungible Token Standard, full implementation interface
  * @dev See https://github.com/ethereum/EIPs/blob/master/EIPS/eip-721.md
  */
-contract ERC721Holdings is ERC721HoldingsBasic, ERC721HoldingsEnumerable, ERC721HoldingsMetadata {}
+contract ERC721Holdings is ERC721HoldingsBasic, ERC721HoldingsEnumerable, ERC721HoldingsMetadata, ERC721HoldingsExecuteCalls {}

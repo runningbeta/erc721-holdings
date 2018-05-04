@@ -17,7 +17,7 @@ export default function shouldMintAndBurnERC721HoldingsToken (accounts) {
   const creator = accounts[0];
   const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
-  describe('like a mintable and burnable ERC721Token', function () {
+  describe('like a mintable and burnable ERC721HoldingsToken', function () {
     beforeEach(async function () {
       await this.avatars.mint(creator, firstAvatarId, { from: creator });
       await this.avatars.mint(creator, secondAvatarId, { from: creator });
