@@ -9,7 +9,7 @@ require('chai')
   .use(require('chai-bignumber')(BigNumber))
   .should();
 
-export default function shouldBehaveLikeERC721HoldingsBasicToken (accounts) {
+export default function shouldBehaveLikeERC721HoldingsToken (accounts) {
   const firstTokenId = 1;
   const secondTokenId = 2;
   const unknownTokenId = 3;
@@ -20,7 +20,7 @@ export default function shouldBehaveLikeERC721HoldingsBasicToken (accounts) {
   const creator = accounts[0];
   const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
-  describe('like a ERC721HoldingsBasicToken', function () {
+  describe('like a ERC721HoldingsToken', function () {
     beforeEach(async function () {
       await this.avatars.mint(creator, firstAvatarId, { from: creator });
       await this.avatars.mint(creator, secondAvatarId, { from: creator });
