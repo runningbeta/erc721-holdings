@@ -1,6 +1,7 @@
-const Message = artifacts.require('mocks/MessageHelper.sol');
+const Message = artifacts.require('test/MessageHelper.sol');
 
 import assertRevert from './helpers/assertRevert';
+import encodeCall from './helpers/encodeCall';
 const BigNumber = web3.BigNumber;
 
 require('chai')
@@ -20,6 +21,20 @@ export default function shouldExecuteCallsERC721HoldingsToken (accounts) {
   const creator = accounts[0];
   const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
+  const buyMessageExtraData = encodeCall(
+    'buyMessage',
+    ['bytes32', 'uint256', 'string'],
+    [web3.toHex(123456), 666, 'Transfer Done']
+  );
+
+  const showMessageExtraData = encodeCall(
+    'showMessage',
+    ['bytes32', 'uint256', 'string'],
+    [web3.toHex(123456), 666, 'Transfer Done']
+  );
+
+  const failExtraData = encodeCall('fail', [], []);
+
   describe('like an execute calls ERC721HoldingsToken', function () {
     beforeEach(async function () {
       this.message = await Message.new({ from: creator });
@@ -32,14 +47,10 @@ export default function shouldExecuteCallsERC721HoldingsToken (accounts) {
       await this.token.mint(firstAvatarId, this.avatars.address, secondTokenId, { from: creator });
     });
 
-    describe('Test Execute Calls methods', function () { 
+    describe('test Execute Calls methods', function () { 
       it('should allow payment through approve', async function () {
-          const extraData = this.message.contract.buyMessage.getData(
-            web3.toHex(123456), 666, 'Transfer Done'
-          );
-  
           const transaction = await this.token.approveAndCall(
-            this.message.contract.address, firstTokenId, extraData, { from: creator, value: 1 }
+            this.message.contract.address, firstTokenId, buyMessageExtraData, { from: creator, value: 1 }
           );
   
           assert.equal(2, transaction.receipt.logs.length);
@@ -52,17 +63,13 @@ export default function shouldExecuteCallsERC721HoldingsToken (accounts) {
         });
   
       it('should allow payment through transferFrom', async function () {
-          const extraData = this.message.contract.buyMessage.getData(
-            web3.toHex(123456), 666, 'Transfer Done'
-          );
-  
           await this.token.approve(accounts[1], firstTokenId, { from: creator });
   
           const appproved = await this.token.getApproved(firstTokenId);
           accounts[1].should.be.equal(appproved);
   
           const transaction = await this.token.transferFromAndCall(
-            accounts[0], secondAvatarId, this.avatars.contract.address, firstTokenId, extraData, { from: accounts[1], value: 1 }
+            accounts[0], secondAvatarId, this.avatars.contract.address, firstTokenId, buyMessageExtraData, { from: accounts[1], value: 1 }
           );
   
           assert.equal(3, transaction.receipt.logs.length);
@@ -75,13 +82,8 @@ export default function shouldExecuteCallsERC721HoldingsToken (accounts) {
         });
   
       it('should revert funds of failure inside approve (with data)', async function () {
-        // showMessage is not payable, so it fails when called with msg.value
-        const extraData = this.message.contract.showMessage.getData(
-          web3.toHex(123456), 666, 'Transfer Done'
-        );
-  
         await this.token.approveAndCall(
-          this.message.contract.address, firstTokenId, extraData, { from: creator, value: 1 }
+          this.message.contract.address, firstTokenId, showMessageExtraData, { from: creator, value: 1 }
         ).should.be.rejectedWith('revert');
   
         // approval should not have gone through so approved address is still 0x0
@@ -93,15 +95,10 @@ export default function shouldExecuteCallsERC721HoldingsToken (accounts) {
       });
   
       it('should revert funds of failure inside transferFrom (with data)', async function () {
-        // showMessage is not payable, so it fails when called with msg.value
-        const extraData = this.message.contract.showMessage.getData(
-          web3.toHex(123456), 666, 'Transfer Done'
-        );
-  
         await this.token.approve(accounts[1], firstTokenId, { from: creator });
   
         await this.token.transferFromAndCall(
-          accounts[0], secondAvatarId, this.avatars.contract.address, firstTokenId, extraData, { from: accounts[1], value: 1 }
+          accounts[0], secondAvatarId, this.avatars.contract.address, firstTokenId, showMessageExtraData, { from: accounts[1], value: 1 }
         ).should.be.rejectedWith('revert');;
   
         // transferFrom should not have gone through so approved address is still accounts[1]
@@ -116,12 +113,8 @@ export default function shouldExecuteCallsERC721HoldingsToken (accounts) {
       });
   
       it('should return correct allowance after approve (with data) and show the event on receiver contract', async function () {
-        const extraData = this.message.contract.showMessage.getData(
-          web3.toHex(123456), 666, 'Transfer Done'
-        );
-
         const transaction = await this.token.approveAndCall(
-          this.message.contract.address, firstTokenId, extraData, { from: creator }
+          this.message.contract.address, firstTokenId, showMessageExtraData, { from: creator }
         );
 
         assert.equal(2, transaction.receipt.logs.length);
@@ -131,17 +124,13 @@ export default function shouldExecuteCallsERC721HoldingsToken (accounts) {
       });
   
       it('should return correct balances after transferFrom (with data) and show the event on receiver contract', async function () { 
-        const extraData = this.message.contract.showMessage.getData(
-          web3.toHex(123456), 666, 'Transfer Done'
-        );
-
         await this.token.approve(accounts[1], firstTokenId, { from: accounts[0] });
 
         const appproved = await this.token.getApproved(firstTokenId);
         accounts[1].should.be.equal(appproved);
 
         const transaction = await this.token.transferFromAndCall(
-          accounts[0], secondAvatarId, this.avatars.contract.address, firstTokenId, extraData, { from: accounts[1] }
+          accounts[0], secondAvatarId, this.avatars.contract.address, firstTokenId, showMessageExtraData, { from: accounts[1] }
         );
 
         assert.equal(3, transaction.receipt.logs.length);
@@ -150,10 +139,8 @@ export default function shouldExecuteCallsERC721HoldingsToken (accounts) {
         new BigNumber(1).should.be.bignumber.equal(tokenBalance);
       });
   
-      it('should fail inside approve (with data)', async function () {
-        const extraData = this.message.contract.fail.getData();
-  
-        await this.token.approveAndCall(this.message.contract.address, firstTokenId, extraData)
+      it('should fail inside approve (with data)', async function () { 
+        await this.token.approveAndCall(this.message.contract.address, firstTokenId, failExtraData)
           .should.be.rejectedWith('revert');
   
         // approval should not have gone through so approved is still ZERO_ADDRESS
@@ -162,10 +149,8 @@ export default function shouldExecuteCallsERC721HoldingsToken (accounts) {
       });
   
       it('should fail inside transferFrom (with data)', async function () {
-        const extraData = this.message.contract.fail.getData();
-  
         await this.token.approve(accounts[1], firstAvatarId, { from: creator });
-        await this.token.transferFromAndCall(creator, secondAvatarId, this.avatars.address, firstTokenId, extraData, { from: creator })
+        await this.token.transferFromAndCall(creator, secondAvatarId, this.avatars.address, firstTokenId, failExtraData, { from: creator })
           .should.be.rejectedWith('revert');
   
         // transferFrom should have failed so balance is still 0 but approved is accounts[1]
@@ -177,22 +162,14 @@ export default function shouldExecuteCallsERC721HoldingsToken (accounts) {
       });
   
       it('should fail approve (with data) when using token contract address as receiver', async function () {
-        const extraData = this.message.contract.showMessage.getData(
-          web3.toHex(123456), 666, 'Transfer Done'
-        );
-  
-        await this.token.approveAndCall(this.token.contract.address, firstAvatarId, extraData, { from: accounts[0] })
+        await this.token.approveAndCall(this.token.contract.address, firstAvatarId, showMessageExtraData, { from: accounts[0] })
           .should.be.rejectedWith('revert');
       });
   
       it('should fail transferFrom (with data) when using token contract address as receiver', async function () {
-        const extraData = this.message.contract.showMessage.getData(
-          web3.toHex(123456), 666, 'Transfer Done'
-        );
-  
         await this.token.approve(accounts[1], firstTokenId, { from: accounts[0] });
   
-        await this.token.transferFromAndCall(accounts[0], thirdAvatarId, this.avatars.address, firstTokenId, extraData, { from: accounts[1] })
+        await this.token.transferFromAndCall(accounts[0], thirdAvatarId, this.avatars.address, firstTokenId, showMessageExtraData, { from: accounts[1] })
           .should.be.rejectedWith('revert');
       });
     });

@@ -1,4 +1,4 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.23;
 
 
 contract MessageHelper {
@@ -27,5 +27,4 @@ contract MessageHelper {
     else
       return false;
   }
-
 }

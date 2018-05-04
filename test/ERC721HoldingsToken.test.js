@@ -3,8 +3,8 @@ import shouldMintAndBurnERC721HoldingsToken from './ERC721HoldingsMintBurn.behav
 import shouldExecuteCallsERC721HoldingsToken from './ERC721HoldingsExecuteCalls.behaviour';
 
 const BigNumber = web3.BigNumber;
-const ERC721BasicToken = artifacts.require('mocks/ERC721BasicTokenMock');
-const ERC721HoldingsToken = artifacts.require('mocks/ERC721HoldingsTokenMock.sol');
+const ERC721BasicToken = artifacts.require('test/ERC721BasicTokenMock');
+const ERC721HoldingsToken = artifacts.require('test/ERC721HoldingsTokenMock.sol');
 
 require('chai')
   .use(require('chai-as-promised'))
